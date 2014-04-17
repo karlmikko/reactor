@@ -44,7 +44,11 @@
 			return (
 				<span>
 					<Router notFound={<p>Oh No!</p>}>
-						<a href="#hello" route="/">Lets Get Started!</a>
+						<div route="/">
+							<a href="#hello">Lets Get Started!</a>
+							<br />
+							<a href="#error/no/route">goto error</a>
+						</div>
 						<Router route="hello/*">
 							<Hello route="/:name" />
 							<div route="/">
