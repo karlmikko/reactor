@@ -4,13 +4,22 @@ It's the MC in React! So far it is just a Router, with an Animate component.
 
 See the [example](https://rawgit.com/KingKarl85/reactor/master/example.html) for usage.
 
+## Router
+
+Requires Backbone to do the routing and history watching.
+
+However it doesn't use the Backbone.Router class. Reactor.Router instead listens to route/hash change events and implements the routing logic on it's own route list.
+
+This allows Reactor.Router to have multiple router instances, unlinke Backbone.Router.
+
+This also allows for Reactor.Router to implement a crude "contexual routing" implementation. See the above example.
+
 ## Plans Include
 
 * Router
 * Model
 * Collection
 * Components
-
 
 All designed specifically for React.
 
