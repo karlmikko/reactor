@@ -58,8 +58,7 @@ var Reactor = Reactor || {};
 
 	var oldLoadUrl = Backbone.history.loadUrl;
 	Backbone.history.loadUrl = function(fragment) {
-		fragment = this.fragment = this.getFragment(fragment);
-		this.trigger("preroute", fragment);
+		this.trigger("preroute", this.getFragment(fragment));
 		return oldLoadUrl.apply(this, arguments);
     };
 
@@ -67,7 +66,7 @@ var Reactor = Reactor || {};
 		getInitialState:function(){
 			return {
 				route:null,
-				clientProps:null
+				clientProps:{}
 			}
 		},
 		_extractParameters:function(){
@@ -78,25 +77,18 @@ var Reactor = Reactor || {};
 		},
 		handleRoute:function(fragment){
 			var done = false;
-			var x=0;
-			React.Children.forEach(this.props.children, function(child){
+			React.Children.forEach(this.props.children, function(child, x){
 				if(!done){
-					var keys = null;
-					var clientProps = null;
 					var route = child.props.route;
-					
 					if(!route) return;
-
 					if(!_.isRegExp(route)){
 						route = this._routeToRegExp(route);
-						keys = this._extractParameters(route, child.props.route);
 					}
-
 					if(route.test(fragment)){
-						done = true;
+						var clientProps = {};
+						var keys = this._extractParameters(route, child.props.route);
 						var args = this._extractParameters(route, fragment);
 						if(args.length>0){
-							clientProps = {};
 							for(var i in args){
 								var key = keys[i];
 								if(key && (key = key.substring(1))){
@@ -108,20 +100,26 @@ var Reactor = Reactor || {};
 							route:x,
 							clientProps:clientProps
 						});
+						done = true;
 					}
 				}
-				x++;
 
 			}.bind(this));
 			if(!done){
 				this.setState({
 					route:null,
-					clientProps:null
+					clientProps:{}
 				});
 			}
 		},
 		componentWillMount:function(){
 			Backbone.history.on('preroute', this.handleRoute, this);
+
+			if(!Backbone.History.started){
+				Backbone.history.start();
+			}
+			
+			Backbone.history.loadUrl();
 		},
 		componentWillUnmount:function(){
 			Backbone.history.off('preroute', this.handleRoute, this);
