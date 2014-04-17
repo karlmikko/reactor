@@ -44,12 +44,16 @@
 			return (
 				<span>
 					<Router notFound={<p>Oh No!</p>}>
-						<Hello route="hello/:name" />
-					</Router>
-					<br />
-					<Router>
-						<p route="hello/:something">Look Above</p>
-						<p route="moon">Mooooon</p>
+						<a href="#hello" route="/">Lets Get Started!</a>
+						<Router route="hello/*">
+							<Hello route="/:name" />
+							<div route="/">
+								<p>Say Hi to someone</p>
+								<p>
+									<a href="#hello/karl">Say Hello Karl</a> - <a href="#hello/Derick">Say Hello Derick</a>
+								</p>
+							</div>
+						</Router>
 					</Router>
 				</span>
 			);
