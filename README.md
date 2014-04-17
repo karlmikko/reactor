@@ -1,6 +1,6 @@
 # Reactor
 
-It's the MC in React!
+It's the MC in React! So far it is just a Router, with an Animate component.
 
 See the [example](https://rawgit.com/KingKarl85/reactor/master/example.html#hello/World) for usage.
 
