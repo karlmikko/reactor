@@ -2,7 +2,7 @@
 
 It's the MC in React!
 
-See the [example](https://rawgit.com/KingKarl85/reactor/master/example.html) for usage.
+See the [example](https://rawgit.com/KingKarl85/reactor/master/example.html#hello/World) for usage.
 
 ## Plans Include
 
