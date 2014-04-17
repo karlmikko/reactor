@@ -78,17 +78,22 @@ var Reactor = Reactor || {};
 		},
 		handleRoute:function(fragment){
 			var done = false;
-			React.Children.forEach(this.props.children, function(child, i){
+			var x=0;
+			React.Children.forEach(this.props.children, function(child){
 				if(!done){
 					var keys = null;
+					var clientProps = null;
 					var route = child.props.route;
+					
 					if(!route) return;
+
 					if(!_.isRegExp(route)){
 						route = this._routeToRegExp(route);
 						keys = this._extractParameters(route, child.props.route);
 					}
+
 					if(route.test(fragment)){
-						var clientProps = null;
+						done = true;
 						var args = this._extractParameters(route, fragment);
 						if(args.length>0){
 							clientProps = {};
@@ -100,12 +105,13 @@ var Reactor = Reactor || {};
 							}
 						}
 						this.setState({
-							route:i,
+							route:x,
 							clientProps:clientProps
 						});
-						done = true;
 					}
 				}
+				x++;
+
 			}.bind(this));
 			if(!done){
 				this.setState({
