@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Reactor</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- jQuery -->
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+<!-- Underscore -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
+
+<!-- Backbone -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.1.2/backbone-min.js"></script>
+
+<!-- Bootstrap -->
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+
+<!-- Font Awesome -->
+<link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
+<!-- React JS -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.10.0/JSXTransformer.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/react/0.10.0/react-with-addons.js"></script>
+
+<!-- React Font Awesome -->
+<script src="src/Reactor.js" type="text/jsx"></script>
+
+<!-- Start the Example -->
+<script type="text/jsx">
+	/** @jsx React.DOM */
+
+	var Hello = React.createClass({
+		render:function(){
+			return <p>Hello {this.props.name}</p>
+		}
+	});
+
+	var RouterExample = React.createClass({
+		render: function() {
+			return (
+				<span>
+					<Router notFound={<p>Oh No!</p>}>
+						<Hello route="hello/:name" />
+					</Router>
+					<br />
+					<Router>
+						<p route="hello/:something">Look Above</p>
+						<p route="moon">Mooooon</p>
+					</Router>
+				</span>
+			);
+		}
+	});
+
+	React.renderComponent(<RouterExample />, document.body);
+	
+	Backbone.history.start();
+
+</script>
+</head>
+<body></body>
+</html>
