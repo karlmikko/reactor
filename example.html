@@ -54,7 +54,7 @@
 					<Route route="hello/karl" absolute >
 						<p>Special hi to karl</p>
 					</Route>
-					<Route route=":name">
+					<Route route="/:name">
 						<Hello/>
 						<Hello/>
 					</Route>
@@ -76,10 +76,10 @@
 							<br />
 							<a href="#error/no/route">goto error</a>
 						</div>
-						<SayHello route="hello/*" />
+						<SayHello route="/hello/*" />
 					</Router>
 					<Router>
-						<Route route="/:verylongname/*">
+						<Route route=":verylongname/*">
 							Hi
 						</Route>
 					</Router>

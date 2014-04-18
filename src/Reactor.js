@@ -205,7 +205,6 @@ var Reactor = Reactor || {};
 					if(!_.isRegExp(route)){
 						route = this._routeToRegExp(route);
 					}
-					console.log(routeString, fragment)
 					if(route.test(fragment)){
 						if(_.isString(routeString)){
 							var keys = this._extractParameters(route, routeString);
