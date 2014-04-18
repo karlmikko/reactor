@@ -113,7 +113,7 @@ Will render `<p>Hello Moon!</p>`.
 * Router
 * Model
 * Collection
-* Components
+* LoaderView
 
 All designed specifically for React.
 

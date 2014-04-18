@@ -41,7 +41,7 @@
 
 	var SayHello = React.createClass({
 		render:function(){
-			return <div sayHelloPlease="true">
+			return <div>
 				<Router>
 					<Route route="/">
 						<p>Say Hi to someone</p>
@@ -52,7 +52,7 @@
 						</p>
 					</Route>
 					<Route route="hello/karl" absolute >
-					<p>Special hi to karl</p>
+						<p>Special hi to karl</p>
 					</Route>
 					<Route route="/:name">
 						<Hello/>
