@@ -22,7 +22,7 @@ React.Router is built on top of Reactor.SwitchView.
 
 This is core of most Reactor components. SwitchView allows you to change what is being rendered by index or id.
 
-~~Example index~~
+_Example index_
 
 ```
 React.renderComponent(
@@ -34,7 +34,7 @@ React.renderComponent(
 ```
 Will render `<p>Hello Moon!</p>`.
 
-~~Example id~~
+_Example id_
 ```
 React.renderComponent(
 	<SwitchView show="moon">
