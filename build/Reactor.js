@@ -267,14 +267,15 @@ var Reactor = Reactor || {};
 
 	var Route = React.createClass({displayName: 'Route',
 		render:function(){
-			React.Children.forEach(this.props.children, function(child){
+			return React.DOM.span(null, React.Children.map(this.props.children, function(child){
+				var p = {};
 				for(var i in this.props){
 					if(i !== "children"){
-						child.props[i] = this.props[i];
+						p[i] = this.props[i];
 					}
 				}
-			}, this);
-			return React.DOM.span(null, this.props.children);
+				return React.addons.cloneWithProps(child, p);
+			}, this));
 		}
 	});
 
