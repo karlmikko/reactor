@@ -58,8 +58,111 @@ var Reactor = Reactor || {};
 
 	var oldLoadUrl = Backbone.history.loadUrl;
 	Backbone.history.loadUrl = function(fragment) {
-		this.trigger("preroute", this.getFragment(fragment));
+		fragment = this.fragment = this.getFragment(fragment);
+		this.trigger("preroute", fragment);
 		return oldLoadUrl.apply(this, arguments);
+	};
+
+	function realChild(child){
+		return child.__realComponentInstance || child;
+	}
+
+	function findChildWithinChildren(child, owner, tree){
+		var found = false;
+		child = realChild(child);
+		if(!owner){
+			return found;
+		}
+		if(owner.props.children){
+			React.Children.forEach(owner.props.children, function(ownerChild){
+				if(!found){
+					ownerChild = realChild(ownerChild);
+					if(ownerChild === child){
+						found = ownerChild;
+					}
+					else{
+						found = findChildWithinChildren(child, ownerChild, tree);
+					}
+				}
+			}, this);
+		}
+		else{
+			if(child === owner){
+				found = child;
+			}
+		}
+		if(found){
+			tree.push(owner);
+		}
+		return found;
+	}
+
+	function getParentTree(child){
+		var tree = [];
+		var owner = child._owner;
+		findChildWithinChildren(child, owner._renderedComponent, tree);
+		while(owner._mountDepth){
+			if(owner._owner){
+				owner = owner._owner;
+				tree.push(owner);
+			}
+			else{
+				break;
+			}
+		}
+		return tree;
+	}
+
+	function getParentRouterContext(child){
+		var parentTree = getParentTree(child);
+		
+		if(parentTree.length){
+			for(var i in parentTree){
+				var parent = parentTree[i];
+				if(parent.isRouter && parent.isRouter()){
+					var context = false;
+					if(parent.routeHasContext){
+						context = parent.currentRoute;
+					}
+					if(!context){
+						context = getParentRouterContext(parent);
+					}
+					return context;
+				}
+			}
+		}
+			
+		return "";
+	};
+
+
+	function getRoute(child, keepContext){
+		child = realChild(child);
+		var parentContext = "";
+		if(!child.props.absolute){
+			parentContext = getParentRouterContext(child);
+		}
+		var route = parentContext + child.props.route;
+		if(!keepContext){
+			route = stripContext(route);
+		}
+		return route;
+	};
+
+	function hasContext(route){
+		if(route){
+			return route.substring(route.length - 1) == "*";
+		}
+		return false;
+	};
+	function stripContext(route){
+		if(hasContext(route)){
+			route = route.substring(0, route.length - 1);
+		}
+		if(route.length >1 && route.substring(route.length-1) == "/"){
+			route = route.substring(0, route.length - 1);
+		}
+		return route;
 	};
 
 	var Router = React.createClass({displayName: 'Router',
@@ -75,70 +178,62 @@ var Reactor = Reactor || {};
 		_routeToRegExp:function(){
 			return Backbone.Router.prototype._routeToRegExp.apply(this, arguments);
 		},
-		hasContext:function(route){
-			if(route){
-				return route.substring(route.length - 2) == "/*";
-			}
-			return false;
-		},
-		stripContext:function(route){
-			if(this.hasContext(route)){
-				route = route.substring(0, route.length - 2);
-			}
-			if(route.length >1 && route.substring(route.length-1) == "/"){
-				route = route.substring(0, route.length - 1);
-			}
-			return route;
-		},
 		isRouter:function(){
 			return true;
 		},
-		getRoute:function(child){
-			var route = "";
-			if(this.isRouter() && this.hasContext(this.props.route)){
-				route+= this.stripContext(this.props.route);
-			}
-			route+= child.props.route;
-			return this.stripContext(route);
-		},
 		handleRoute:function(fragment){
+			this.currentRoute = null;
+			fragment = fragment || Backbone.history.fragment;
 			var done = false;
 			React.Children.forEach(this.props.children, function(child, x){
 				if(!done){
+					var routeString = null;
 					var clientProps = {};
-					var route = this.getRoute(child);
-					if(_.isString(route) && this.hasContext(child.props.route)){
-						fragment = fragment.substring(0, route.length);
-					}
-					fragment = this.stripContext(fragment);
+					var contextRoute = false;
+					var route = getRoute(child);
 					if(!route) return;
+					if(_.isString(route)){
+						routeString = route;
+					}
+					if(_.isString(route) && hasContext(getRoute(child, true))){
+						fragment = fragment.substring(0, route.length);
+						contextRoute = true;
+					}
+					fragment = stripContext(fragment); //remove tailing "/" from fragment
 					if(!_.isRegExp(route)){
 						route = this._routeToRegExp(route);
 					}
 					if(route.test(fragment)){
-						var keys = this._extractParameters(route, this.getRoute(child));
-						var args = this._extractParameters(route, fragment);
-						if(args.length>0){
-							for(var i in args){
-								var key = keys[i];
-								if(key && (key = key.substring(1))){
-									clientProps[key] = args[i];
+						if(_.isString(routeString)){
+							var keys = this._extractParameters(route, routeString);
+							var args = this._extractParameters(route, fragment);
+							if(args.length>0){
+								for(var i in args){
+									var key = keys[i];
+									if(key && (key = key.substring(1))){
+										clientProps[key] = args[i];
+									}
 								}
 							}
 						}
-					}else{
-						if(fragment !== "" || this.getRoute(child) !== "/"){
+					}
+					else{
+						if(fragment !== "" || getRoute(child) !== "/"){
 							return //failed;
 						}
 					}
-					this.route = x;
+					this.routeIndex = x;
+					this.routeHasContext = contextRoute;
+					this.currentRoute = fragment;
 					this.clientProps = clientProps;
 					done = true;
 				}
 
 			}.bind(this));
 			if(!done){
-				this.route = null;
+				this.routeIndex = null;
+				this.routeHasContext = null;
+				this.currentRoute = null;
 				this.clientProps = {};
 			}
 			if(this.isMounted()){
@@ -146,19 +241,55 @@ var Reactor = Reactor || {};
 			}
 		},
 		componentDidMount:function(){
-			Backbone.history.on('preroute', this.handleRoute, this);
+			this.routeIndex = null;
+			this.routeHasContext = null;
+			this.currentRoute = null;
+			this.clientProps = {};
+
 
 			if(!Backbone.History.started){
-				Backbone.history.start();
+				var pushState = this.props.pushState || false;
+				Backbone.history.start({pushState: pushState});
 			}
 
-			Backbone.history.loadUrl();
+			Backbone.history.on('preroute', this.handleRoute, this);
+			this.handleRoute();
 		},
 		componentWillUnmount:function(){
 			Backbone.history.off('preroute', this.handleRoute, this);
 		},
 		render:function(){
-			return SwitchView( {show:this.route, clientProps:this.clientProps, else:this.props.notFound || React.DOM.span(null)}, this.props.children);
+			return SwitchView( {show:this.routeIndex, clientProps:this.clientProps, else:this.props.notFound || React.DOM.span(null)}, this.props.children);
+		}
+	});
+
+	var Route = React.createClass({displayName: 'Route',
+		render:function(){
+			React.Children.forEach(this.props.children, function(child){
+				for(var i in this.props){
+					if(i !== "children"){
+						child.props[i] = this.props[i];
+					}
+				}
+			}, this);
+			return React.DOM.span(null, this.props.children);
+		}
+	});
+
+	var Navigate = React.createClass({displayName: 'Navigate',
+		onClick:function(e){
+			e.preventDefault();
+			var parentContext = "";
+			if(!this.props.absolute){
+				parentContext = getParentRouterContext(this);
+			}
+			Backbone.history.navigate(parentContext + this.props.href, {trigger: true, replace:this.props.silent});
+		},
+		render:function(){
+			var props = _.extend(this.props, {
+				onClick:this.onClick
+			});
+			return React.addons.cloneWithProps(React.DOM.a(null), props);
 		}
 	});
 
@@ -166,6 +297,8 @@ var Reactor = Reactor || {};
 		SwitchView: SwitchView,
 		Animate: Animate,
 		Router: Router,
+		Route: Route,
+		Navigate: Navigate,
 	}
 	
 	//Register in window global for browsers

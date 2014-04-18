@@ -18,6 +18,8 @@ Any child of a Reactor.Router is considered a route destination if it has the `p
 
 React.Navigate is a wrapper around `<a/>` where the `href` is the location to navigate to. This `href` is considered contextual to the parent React.Routers. To define an "Absoulte" route, add the `prop` `absolute`.
 
+React.Navigate will also let you pass `prop` `silent` to route without placing a history event.
+
 If you have `props` conflict, Reactor.Route is provided as a wrapper. React.Route will pass and derived fragments to all children.
 
 React.Router is built on top of Reactor.SwitchView.

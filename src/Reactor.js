@@ -63,25 +63,8 @@ var Reactor = Reactor || {};
 		return oldLoadUrl.apply(this, arguments);
 	};
 
-	function getOwner(child){
-		if(child._owner){
-			return child._owner;
-		}
-		var rComp = child._renderedComponent;
-		if(rComp){
-			var children = rComp._renderedChildren;
-			if(children){
-				return children['.0'];
-			}
-		}
-		return false;
-	}
-
 	function realChild(child){
-		if(child.__realComponentInstance){
-			return child.__realComponentInstance;
-		}
-		return child;
+		return child.__realComponentInstance || child;
 	}
 
 	function findChildWithinChildren(child, owner, tree){
@@ -93,9 +76,7 @@ var Reactor = Reactor || {};
 		if(owner.props.children){
 			React.Children.forEach(owner.props.children, function(ownerChild){
 				if(!found){
-					if(ownerChild.__realComponentInstance){
-						ownerChild = ownerChild.__realComponentInstance;
-					}
+					ownerChild = realChild(ownerChild);
 					if(ownerChild === child){
 						found = ownerChild;
 					}
@@ -308,7 +289,7 @@ var Reactor = Reactor || {};
 			var props = _.extend(this.props, {
 				onClick:this.onClick
 			});
-			return React.addons.cloneWithProps(<a/>, this.props);
+			return React.addons.cloneWithProps(<a/>, props);
 		}
 	});
 
