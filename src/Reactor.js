@@ -135,14 +135,14 @@ var Reactor = Reactor || {};
 		return "";
 	};
 
-
 	function getRoute(child, keepContext){
 		child = realChild(child);
 		var parentContext = "";
 		if(!child.props.absolute){
 			parentContext = getParentRouterContext(child);
 		}
-		var route = parentContext + child.props.route;
+		var route = stripContext(parentContext) + "/" + child.props.route;
+		route = route.replace("//","/");
 		if(!keepContext){
 			route = stripContext(route);
 		}
@@ -184,6 +184,7 @@ var Reactor = Reactor || {};
 		handleRoute:function(fragment){
 			this.currentRoute = null;
 			fragment = fragment || Backbone.history.fragment;
+			fragment = "/" + fragment;
 			var done = false;
 			React.Children.forEach(this.props.children, function(child, x){
 				if(!done){
@@ -196,13 +197,15 @@ var Reactor = Reactor || {};
 						routeString = route;
 					}
 					if(_.isString(route) && hasContext(getRoute(child, true))){
-						fragment = fragment.substring(0, route.length);
+						//compare only same number of parts of fragment to route
+						fragment = fragment.split("/").slice(0, route.split("/").length).join("/");
 						contextRoute = true;
 					}
 					fragment = stripContext(fragment); //remove tailing "/" from fragment
 					if(!_.isRegExp(route)){
 						route = this._routeToRegExp(route);
 					}
+					console.log(routeString, fragment)
 					if(route.test(fragment)){
 						if(_.isString(routeString)){
 							var keys = this._extractParameters(route, routeString);
@@ -218,7 +221,7 @@ var Reactor = Reactor || {};
 						}
 					}
 					else{
-						if(fragment !== "" || getRoute(child) !== "/"){
+						if(fragment !== "" || !["/", ""].indexOf(routeString)){
 							return //failed;
 						}
 					}
