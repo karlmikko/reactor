@@ -119,6 +119,9 @@ Will render `<p>Hello Moon!</p>`.
 * Model
 * Collection
 * Better Documentation
+* Better Build tools
+* NPM module
+* ServerSide rendering made easy
 
 All designed specifically for React.
 
