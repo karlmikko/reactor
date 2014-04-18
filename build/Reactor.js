@@ -288,10 +288,43 @@ var Reactor = Reactor || {};
 			Backbone.history.navigate(parentContext + this.props.href, {trigger: true, replace:this.props.silent});
 		},
 		render:function(){
-			var props = _.extend(this.props, {
-				onClick:this.onClick
-			});
-			return React.addons.cloneWithProps(React.DOM.a(null), props);
+			return React.addons.cloneWithProps(React.DOM.a( {onClick:this.onClick}), this.props);
+		}
+	});
+
+	var Loader = React.createClass({displayName: 'Loader',
+		loading:function(){
+			this.props.loaded=null;
+			if(this.isMounted()){
+				this.forceUpdate();
+			}
+		},
+		loaded:function(){
+			this.props.loaded=true;
+			if(this.isMounted()){
+				this.forceUpdate();
+			}
+		},
+		componentDidMount:function(){
+			var model = this.props.model;
+			if(model && model.on && model.off){
+				model.on("request", this.loading);
+				model.on("sync", this.loaded);
+				model.on("error", this.loaded);
+			}
+		},
+		componentWillUnmount:function(){
+			var model = this.props.model;
+			if(model && model.on && model.off){
+				model.off("request", this.loading);
+				model.off("sync", this.loaded);
+				model.off("error", this.loaded);
+			}
+		},
+		render:function(){
+			return SwitchView( {show:this.props.loaded ? 0 : null, else:this.props.loading}, 
+					React.DOM.span(null, this.props.children)
+				);
 		}
 	});
 
@@ -301,6 +334,7 @@ var Reactor = Reactor || {};
 		Router: Router,
 		Route: Route,
 		Navigate: Navigate,
+		Loader: Loader,
 	}
 	
 	//Register in window global for browsers

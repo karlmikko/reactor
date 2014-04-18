@@ -288,10 +288,7 @@ var Reactor = Reactor || {};
 			Backbone.history.navigate(parentContext + this.props.href, {trigger: true, replace:this.props.silent});
 		},
 		render:function(){
-			var props = _.extend(this.props, {
-				onClick:this.onClick
-			});
-			return React.addons.cloneWithProps(<a/>, props);
+			return React.addons.cloneWithProps(<a onClick={this.onClick}/>, this.props);
 		}
 	});
 
