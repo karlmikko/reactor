@@ -25,7 +25,9 @@ This is core of most Reactor components. SwitchView allows you to change what is
 **Props**
 
 * `show` - Select what child to render (default 0 or else if supplied). If `null` supplied, then else will be rendered.
-* `else` - ReactComponent to render when `show` is now found.
+* `else` - ReactComponent to render when `show` is now found. (default to <span />)
+
+Warning: `else` default will change in future version to not render anything, React currenlty doesn't support rendering nothing.
 
 **Example index**
 
