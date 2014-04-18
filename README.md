@@ -12,9 +12,15 @@ Reactor.Router listens to route/hash change events and implements the routing lo
 
 This allows Reactor.Router to have multiple router instances, unlinke Backbone.Router.
 
-This also allows for Reactor.Router to implement a crude "contexual routing" implementation. See the above example.
+This also allows for Reactor.Router to implement a crude "contexual routing" implementation. A context route is represented by a tailing `/*`.
 
 React.Router is built on top of Reactor.SwitchView.
+
+**Props**
+`notFound` - Is passed to `SwitchView` as `else`. I.E. `notFound` is the 404 of the router (default `<span />`).
+`pushState` - If true will tell Backbone.history.start to use `{pushStart:true}`.
+
+React.Router will start Backbone.History automatically if not already started. To use custom Backbone.history.start() options unsure Backbone.history.start is called before any React.Router components are rendered.
 
 **Example**
 ```
@@ -58,13 +64,6 @@ React.renderComponent(
 , domNode);
 ```
 Route `/hello/moon` will render `<p>Hello Moon!</p>`.
-
-
-React.Router will start Backbone.History automatically if not already started. React.Router will also call `Backbone.history.loadUrl()` as part of `componentDidMount`.
-
-To use Backbone.Hisotry `pushState` before any React.Router components are rendered, start Backbone.History with `pushState` enabled.
-
-`Backbone.history.start({pushState:true})`
 
 ## Components
 
