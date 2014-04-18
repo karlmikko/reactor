@@ -6,15 +6,35 @@ See the [example](https://rawgit.com/KingKarl85/reactor/master/example.html) for
 
 ## Router
 
-Requires Backbone to do the routing and history watching.
+Requires Backbone.History history/pushState monitoring and borrows from Backbone.Router for routing logic.
 
-However it doesn't use the Backbone.Router class. Reactor.Router instead listens to route/hash change events and implements the routing logic on it's own route list.
+Reactor.Router listens to route/hash change events and implements the routing logic on it's own route list.
 
 This allows Reactor.Router to have multiple router instances, unlinke Backbone.Router.
 
 This also allows for Reactor.Router to implement a crude "contexual routing" implementation. See the above example.
 
-## Plans Include
+React.Router is built on top of Reactor.SwitchView.
+
+## Components
+
+### SwitchView
+
+This is core of most Reactor components. SwitchView allows you to change what is being rendered by index or id.
+
+Example
+
+```
+React.renderComponent(
+	<SwitchView show="1">
+		<p>Hello World!</p>
+		<p>Hello Moon!</p>
+	</SwitchView>
+, domNode);
+```
+Will render `<p>Hello Moon</p>`.
+
+## Future Plans Include
 
 * Router
 * Model
