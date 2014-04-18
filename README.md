@@ -14,6 +14,12 @@ This allows Reactor.Router to have multiple router instances, unlinke Backbone.R
 
 This also allows for Reactor.Router to implement a crude "contexual routing" implementation. A context route is represented by a tailing `/*`.
 
+Any child of a Reactor.Router is considered a route destination if it has the `prop` `route`. All routes are considered contextual to parent React.Routers. To define an "Absoulte" route, add the `prop` `absolute`.
+
+React.Navigate is a wrapper around `<a/>` where the `href` is the location to navigate to. This `href` is considered contextual to the parent React.Routers. To define an "Absoulte" route, add the `prop` `absolute`.
+
+If you have `props` conflict, Reactor.Route is provided as a wrapper. React.Route will pass and derived fragments to all children.
+
 React.Router is built on top of Reactor.SwitchView.
 
 **Props**

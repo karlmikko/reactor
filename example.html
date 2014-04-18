@@ -39,6 +39,33 @@
 		}
 	});
 
+	var SayHello = React.createClass({
+		render:function(){
+			return <div sayHelloPlease="true">
+				<Router>
+					<Route route="/">
+						<p>Say Hi to someone</p>
+						<p>
+							<a href="#hello/karl">Say Hello Karl</a>
+							<br />
+							<a href="#hello/Derick">Say Hello Derick</a>
+						</p>
+					</Route>
+					<Route route="hello/karl" absolute >
+					<p>Special hi to karl</p>
+					</Route>
+					<Route route="/:name">
+						<Hello/>
+						<Hello/>
+					</Route>
+				</Router>
+				<Navigate href="/" absolute>Goto Start</Navigate>
+				<br />
+				<Navigate href="/">Goto SayHello</Navigate>
+			</div>;
+		}
+	});
+
 	var RouterExample = React.createClass({
 		render: function() {
 			return (
@@ -49,21 +76,8 @@
 							<br />
 							<a href="#error/no/route">goto error</a>
 						</div>
-						<Router route="hello/*">
-							<Hello route="/:name" />
-							<div route="/">
-								<p>Say Hi to someone</p>
-								<p>
-									<a href="#hello/karl">Say Hello Karl</a> - <a href="#hello/Derick">Say Hello Derick</a>
-								</p>
-							</div>
-						</Router>
+						<SayHello route="hello/*" />
 					</Router>
-					<br />
-					<SwitchView show="1">
-						<p>Hello World!</p>
-						<p>Hello Moon!</p>
-					</SwitchView>
 				</span>
 			);
 		}
