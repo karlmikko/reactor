@@ -295,12 +295,49 @@ var Reactor = Reactor || {};
 		}
 	});
 
+	var Loader = React.createClass({
+		loading:function(){
+			this.props.loaded=null;
+			if(this.isMounted()){
+				this.forceUpdate();
+			}
+		},
+		loaded:function(){
+			this.props.loaded=true;
+			if(this.isMounted()){
+				this.forceUpdate();
+			}
+		},
+		componentDidMount:function(){
+			var model = this.props.model;
+			if(model && model.on && model.off){
+				model.on("request", this.loading);
+				model.on("sync", this.loaded);
+				model.on("error", this.loaded);
+			}
+		},
+		componentWillUnmount:function(){
+			var model = this.props.model;
+			if(model && model.on && model.off){
+				model.off("request", this.loading);
+				model.off("sync", this.loaded);
+				model.off("error", this.loaded);
+			}
+		},
+		render:function(){
+			return <SwitchView show={this.props.loaded ? 0 : null} else={this.props.loading}>
+					<span>{this.props.children}</span>
+				</SwitchView>;
+		}
+	});
+
 	Reactor = {
 		SwitchView: SwitchView,
 		Animate: Animate,
 		Router: Router,
 		Route: Route,
 		Navigate: Navigate,
+		Loader: Loader,
 	}
 	
 	//Register in window global for browsers
