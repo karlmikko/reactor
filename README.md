@@ -108,12 +108,17 @@ React.renderComponent(
 ```
 Will render `<p>Hello Moon!</p>`.
 
-## Future Plans Include
+## Plans Include
 
-* Router
+* Router - done!
+* Route - done!
+* Navigate - done!
+* LoaderView - done!
+* Animate - done!
+* SwitchView - done!
 * Model
 * Collection
-* LoaderView
+* Better Documentation
 
 All designed specifically for React.
 

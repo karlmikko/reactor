@@ -40,6 +40,14 @@
 	});
 
 	var SayHello = React.createClass({
+		getInitialState:function(){
+			return {loaded:false};
+		},
+		componentDidMount:function(){
+			setTimeout(function(){
+				this.setState({loaded:true});
+			}.bind(this), 5000);
+		},
 		render:function(){
 			return <div>
 				<Router>
@@ -52,7 +60,9 @@
 						</p>
 					</Route>
 					<Route route="hello/karl" absolute >
-						<p>Special hi to karl</p>
+						<Loader loaded={this.state.loaded} loading={<LoadingView />}>
+							<p>Special hi to karl</p>
+						</Loader>
 					</Route>
 					<Route route="/:name">
 						<Hello/>
@@ -66,10 +76,24 @@
 		}
 	});
 
+	var LoadingView = React.createClass({
+		render:function(){
+			return <span>Loading for 5 seconds ...</span>;
+		}
+	})
+
 	var RouterExample = React.createClass({
+		getInitialState:function(){
+			return {loaded:false};
+		},
+		componentDidMount:function(){
+			setTimeout(function(){
+				this.setState({loaded:true});
+			}.bind(this), 5000);
+		},
 		render: function() {
 			return (
-				<span>
+				<Loader loaded={this.state.loaded} loading={<LoadingView />}>
 					<Router notFound={<p>Oh No!</p>}>
 						<div route="/">
 							<a href="#hello">Lets Get Started!</a>
@@ -83,7 +107,7 @@
 							Hi
 						</Route>
 					</Router>
-				</span>
+				</Loader>
 			);
 		}
 	});
