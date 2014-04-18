@@ -16,6 +16,56 @@ This also allows for Reactor.Router to implement a crude "contexual routing" imp
 
 React.Router is built on top of Reactor.SwitchView.
 
+**Example**
+```
+React.renderComponent(
+	<Router>
+		<p route="/">Hello World!</p>
+		<p route="/moon">Hello Moon!</p>
+	</Router>
+, domNode);
+```
+Route `/moon` will render `<p>Hello Moon!</p>`.
+
+**Example Props Passed**
+```
+
+var HelloWho = React.renderComponent({
+	render:function(){
+		return <p>Hello {this.props.who}!</p>
+	}
+});
+
+React.renderComponent(
+	<Router>
+		<p route="/">Hello World!</p>
+		<div route="/hello/:who">Hello Moon!</div>
+	</Router>
+, domNode);
+```
+Route `/hello/Moon` will render `<p>Hello Moon!</p>`.
+
+**Example Contextual**
+```
+React.renderComponent(
+	<Router>
+		<p route="/">Hello World!</p>
+		<Router route="hello/*">
+			<p route="/moon">Hello Moon!</p>
+			<p route="/sun">Hello Sun!</p>
+		</Router>
+	</Router>
+, domNode);
+```
+Route `/hello/moon` will render `<p>Hello Moon!</p>`.
+
+
+React.Router will start Backbone.History automatically if not already started. React.Router will also call `Backbone.history.loadUrl()` as part of `componentDidMount`.
+
+To use Backbone.Hisotry `pushState` before any React.Router components are rendered, start Backbone.History with `pushState` enabled.
+
+`Backbone.history.start({pushState:true})`
+
 ## Components
 
 ### SwitchView
@@ -30,7 +80,6 @@ This is core of most Reactor components. SwitchView allows you to change what is
 Warning: `else` default will change in future version to not render anything, React currenlty doesn't support rendering nothing.
 
 **Example index**
-
 ```
 React.renderComponent(
 	<SwitchView show="1">
