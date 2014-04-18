@@ -22,6 +22,11 @@ React.Router is built on top of Reactor.SwitchView.
 
 This is core of most Reactor components. SwitchView allows you to change what is being rendered by index or id.
 
+**Props**
+
+* `show` - Select what child to render (default 0 or else if supplied). If `null` supplied, then else will be rendered.
+* `else` - ReactComponent to render when `show` is now found.
+
 **Example index**
 
 ```
