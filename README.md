@@ -123,6 +123,12 @@ Will render `<p>Hello Moon!</p>`.
 * NPM module
 * ServerSide rendering made easy
 
+## TODO
+* Make Router use it's own instance of Backbone.History not the default on or pass a history object.
+* All child routers to use top Router history.
+* Set history on top Router. throw if history set twice.
+* on instanciate create new history if not given.
+
 All designed specifically for React.
 
 ## License
