@@ -41,7 +41,7 @@ React.renderComponent(
 ```
 Route `/moon` will render `<p>Hello Moon!</p>`.
 
-**Example Props Passed**
+**Example Props Passed / Dynamic Routes**
 ```
 
 var HelloWho = React.renderComponent({
