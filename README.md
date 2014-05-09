@@ -53,7 +53,7 @@ var HelloWho = React.renderComponent({
 React.renderComponent(
 	<Router>
 		<p route="/">Hello World!</p>
-		<div route="/hello/:who">Hello Moon!</div>
+		<HelloWho route="/hello/:who" />
 	</Router>
 , domNode);
 ```
