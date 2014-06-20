@@ -1,8 +1,12 @@
 # Reactor
 
-It's the MC in React! So far it is just a Router, with an Animate component.
+This is a little experiment I did when first looking at React.
 
-See the [example](https://rawgit.com/KingKarl85/reactor/master/example.html) for usage.
+For a complete Router look at [React-Nested-Router](https://github.com/rpflorence/react-nested-router), Ryan has done a stella job on this! 
+
+Please only consider this an experiment.
+
+See the [example](https://rawgit.com/karlmikk/reactor/master/example.html) for usage.
 
 ## Router
 
